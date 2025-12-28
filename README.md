@@ -82,6 +82,25 @@ El análisis univariado inicial sugería salarios fuera de rango para ciertos ro
 
 ---
 
+## Procesamiento de Datos
+
+### La Limpieza y Transformación
+
+Llegó el momento de materializar las conclusiones del análisis exploratorio. El procesamiento de datos se ejecutó siguiendo una metodología clara que garantizó **trazabilidad y reproducibilidad** en cada paso del pipeline.
+
+Con las 15 variables problemáticas ya identificadas en la fase exploratoria, su eliminación fue directa y sin complicaciones. El dataset no presentaba valores nulos ni inconsistencias, lo que permitió un proceso de limpieza eficiente: de 35 variables iniciales se redujo a 20, conservando únicamente aquellas con verdadero valor predictivo.
+
+En este caso no hubieron trnasformaciones de los datos del dataset. Las transformaciones técnicas específicas de cada algoritmo —escalado, codificación de variables categóricas— se reservaron para etapas posteriores del pipeline, donde cada modelo dictaría sus propias necesidades de preprocesamiento.
+
+### Preparación para Dos Escenarios
+
+El dataset depurado se dividió estratégicamente en dos conjuntos con propósitos diferenciados:
+
+- **Entrenamiento**: Donde los modelos aprenderían los patrones salariales
+- **Evaluación**: Simulando empleados nuevos para validar la capacidad predictiva en escenarios reales
+
+---
+
 ## Inicialización y Uso
 
 Proyecto realizado con la versión 3.13 de python, no se puede garantizar que con versiones inferiores funcione todas la librerias
