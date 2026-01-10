@@ -1,5 +1,9 @@
 # Detección de Inconsistencias Salariales mediante Modelos Predictivos
 
+Este proyecto desarrolla un sistema de modelización predictiva orientado a la detección de desviaciones salariales en un contexto empresarial.  
+A través de un pipeline completo de Machine Learning, se exploran y preparan los datos, se entrenan y comparan distintos modelos, y se aplican técnicas de explicabilidad para interpretar los resultados.  
+Finalmente, las métricas técnicas del modelo se traducen a indicadores de negocio que permiten evaluar su impacto potencial en la toma de decisiones.
+
 ## Contexto y Motivación
 
 La entrada en vigor de la **Directiva Europea de Transparencia Salarial (UE 2023/970)** exige a las empresas justificar de forma objetiva cualquier diferencia salarial relevante entre empleados que desempeñan funciones similares. Sin herramientas adecuadas, esta tarea resulta difícil para departamentos de RRHH, especialmente en organizaciones con plantillas amplias y estructuras salariales complejas.
@@ -58,9 +62,9 @@ El análisis resultó en la identificación de **15 variables candidatas** para 
 - `YearsInCurrentRole`: Correlación 0.76 con YearsAtCompany
 - `YearsWithCurrManager`: Correlación 0.77 con YearsAtCompany
 
-![Mapa de correlaciones](images/correlation_heatmap.png)
+![Mapa de correlaciones](Images/correlation_heatmap.png)
 
-![Correlaciones con variable objetivo](images/correlaciones_con_objetivo.png)
+![Correlaciones con variable objetivo](Images/correlaciones_con_objetivo.png)
 
 ### Consideraciones Éticas
 
@@ -72,13 +76,13 @@ En coordinación con el departamento de RRHH, se identificaron **variables con p
 
 El análisis univariado temporal confirmó la ausencia de inconsistencias cronológicas. Los valores atípicos detectados fueron validados por RRHH como casos documentados y justificados.
 
-![Análisis de consistencia temporal](images/analisis_consistencia_temporal.png)
+![Análisis de consistencia temporal](Images/analisis_consistencia_temporal.png)
 
 #### Análisis de Outliers Salariales
 
 El análisis univariado inicial sugería salarios fuera de rango para ciertos roles. Sin embargo, el **análisis multivariado** (considerando rol, nivel y experiencia) demostró que estos valores estaban justificados y no representaban inconsistencias salariales.
 
-![Análisis multivariado salario-rol-nivel](images/analisis_salario_rol_nivel.png)
+![Análisis multivariado salario-rol-nivel](Images/analisis_salario_rol_nivel.png)
 
 ---
 
@@ -103,7 +107,7 @@ El dataset depurado se dividió estratégicamente en dos conjuntos con propósit
 
 ## Modelos
 
-Se scojen tres modelos que dan tres prespectivas diferentes.
+Se escojen tres modelos que dan tres prespectivas diferentes.
 
 ### **Regresión Lineal - El Punto de Partida**
 
@@ -118,8 +122,6 @@ Se necesita un punto de referencia. Si este modelo simple funciona bien, no nece
 **Lo que esperamos descubrir:**
 Los salarios probablemente no funcionan de forma tan directa. Pero necesitamos confirmarlo con datos, no con suposiciones.
 
----
-
 ### **Random Forest - El Equilibrio**
 
 Un equipo de modelos sencillos que votan juntos la predicción final.
@@ -131,8 +133,6 @@ Captura relaciones complejas sin tener que explicarle cómo. Descubre automátic
 Es robusto. Los salarios tienen valores extremos naturales: ejecutivos, consultores especializados. Este modelo los maneja sin distorsionar las predicciones generales.
 
 **Es la apuesta principal.** Balance entre precisión, estabilidad y explicabilidad.
-
----
 
 ### **XGBoost - El Especialista**
 
@@ -148,6 +148,8 @@ Aprende de forma más refinada que Random Forest. Pero esa sofisticación tiene 
 
 Si supera a Random Forest significativamente, vale la pena su complejidad. Si la diferencia es pequeña, nos quedamos con lo más simple y mantenible.
 
+**Es la apuesta principal**, no solo por su rendimiento predictivo, sino por el equilibrio entre precisión, estabilidad y capacidad de interpretación, aspectos especialmente relevantes en un contexto de análisis salarial y toma de decisiones de negocio.
+
 ---
 
 ## Métricas de Evaluación
@@ -156,8 +158,6 @@ Elegir cómo medir el éxito no es trivial. Un modelo puede parecer excelente se
 
 Pero primero, las que no aplican, en este caso de uso.
 
----
-
 ### Lo Que No Sirve Aquí
 
 Existen métricas populares en machine learning que brillan en otros contextos pero no tienen sentido para nuestro problema. **F1-Score, ROC-AUC, Precision y Recall** son herramientas potentes para clasificación: cuando predices categorías como "¿renunciará este empleado?" o "¿es este candidato senior o junior?". Responden preguntas binarias o de múltiples clases.
@@ -165,8 +165,6 @@ Existen métricas populares en machine learning que brillan en otros contextos p
 No clasificamos. Predecimos un número continuo: el salario exacto. No hay categorías que separar, hay un valor que acertar.
 
 También se descarta **MSE** (Error Cuadrático Medio) no porque sea mala, sino porque es menos interpretable. MSE eleva al cuadrado los errores, lo que distorsiona las unidades. Si trabajamos con salarios en miles y MSE devuelve 1,150,000, ese número pierde significado inmediato. Preferimos su versión con raíz cuadrada que mantiene las unidades originales.
-
----
 
 ### Las Cuatro Elegidas
 
@@ -202,13 +200,11 @@ Se utilizaron tres enfoques complementarios para interrogar al modelo desde dife
 
 **Análisis de Impacto de Negocio** traduce números abstractos a diferencias salariales concretas. Comparamos: ¿cuánto gana alguien en el percentil 25 de una variable versus alguien en el percentil 75? No hablamos de "importance de 0.87" sino de "una diferencia de 10,166 unidades entre niveles bajos y altos".
 
----
-
 ### Las Variables Que Mandan
 
 El modelo identificó una jerarquía clara. Tres variables dominan, y el resto juega roles secundarios.
 
-![Feature Importance](images/feature_importance_RandomForest.png)
+![Feature Importance](Images/feature_importance_RandomForest.png)
 
 **JobLevel - El Factor Dominante (86.9% de importancia)**
 
@@ -218,7 +214,7 @@ Un empleado en JobLevel bajo (percentil 25) gana en promedio 2,775 unidades. Uno
 
 El modelo captura la realidad corporativa: cada escalón jerárquico no suma linealmente, multiplica exponencialmente. Pasar de nivel 1 a nivel 2 duplica el salario. Pasar de nivel 4 a nivel 5 casi lo triplica. Las curvas lo muestran: la pendiente se hace más pronunciada en niveles altos.
 
-![Relación JobLevel-Salario](images/analisis_variable_JobLevel_RandomForest.png)
+![Relación JobLevel-Salario](Images/analisis_variable_JobLevel_RandomForest.png)
 
 Esta variable sola explica más que todas las demás juntas. Es la columna vertebral del sistema salarial.
 
@@ -234,7 +230,7 @@ El modelo aprendió lo que sabemos del mercado laboral: quedarse paga hasta cier
 
 **YearsSinceLastPromotion - El Estancamiento Duele (2.8% de importancia)**
 
-![Impacto Monetario](images/impacto_monetario_RandomForest.png)
+![Impacto Monetario](Images/impacto_monetario_RandomForest.png)
 
 Tiempo sin promoción impacta el salario en **3,253 unidades de diferencia (53.6%)** entre extremos.
 
@@ -272,7 +268,7 @@ Tres hallazgos clave emergen de la explicabilidad:
 
 **Tercero: Los roles modulan, no definen.** Dentro de un mismo nivel, ser Manager ajusta el salario en +938 unidades, pero el nivel sigue siendo el determinante principal. Un Manager de nivel 3 gana menos que un Scientist de nivel 5.
 
-![SHAP Summary](images/shap_summary_RandomForest.png)
+![SHAP Summary](Images/shap_summary_RandomForest.png)
 
 ---
 
@@ -381,13 +377,30 @@ El modelo convirtió la Directiva UE 2023/970 de amenaza legal en ventaja operat
 
 ---
 
-## paso a producción
+## Alcance y limitaciones del proyecto
 
-## Despliegue y Productivización
+Este trabajo se centra en el desarrollo y evaluación de un modelo predictivo en un entorno analítico.  
+Quedan fuera del alcance de este proyecto la implementación de un sistema de despliegue en producción, el reentrenamiento automático del modelo y la integración en tiempo real con sistemas corporativos.
 
-Un modelo que permanece en un notebook no genera valor. La transición de experimento a sistema operativo requiere arquitectura, monitoreo y gobernanza.
+Estas decisiones permiten focalizar el análisis en la calidad del modelo, su interpretación y su traducción a métricas de negocio, manteniendo un alcance acorde a los objetivos académicos del trabajo.
 
 ---
+
+## Esquema del sistema
+
+El flujo completo del sistema desarrollado en este proyecto puede resumirse de la siguiente forma:
+
+Datos → Análisis exploratorio (EDA) → Preprocesado → División del dataset validación, train/test → Entrenamiento de modelos → Evaluación → Explicabilidad → Traducción a métricas de negocio
+
+---
+
+## Paso a producción
+
+### Despliegue y Productivización
+
+Un modelo que permanece en un notebook no genera valor por sí mismo.
+
+En este proyecto, la transición de experimento a sistema operativo se aborda únicamente a nivel conceptual, describiendo los elementos necesarios sin implementar un sistema productivo real.
 
 ### Estrategia de Inferencia
 
@@ -401,15 +414,11 @@ Las auditorías de compliance son trimestrales. Procesar la plantilla completa e
 
 Para consultas puntuales cuando RRHH evalúa ofertas salariales durante entrevistas. Una API REST simple permite predicciones en tiempo real con rango de confianza.
 
----
-
 ### Reentrenamiento
 
 **Frecuencia base: Trimestral**, alineado con ciclos de auditoría. Cada trimestre se reentrena con los últimos 2 años de datos y se valida contra holdout actualizado.
 
 **Trigger anticipado: Data drift detectado**. Si el monitoreo detecta degradación antes del trimestre (MAPE aumenta >2 puntos, distribución de JobLevel cambia >15%, o aparecen nuevos roles en >5% de plantilla), se adelanta el reentrenamiento.
-
----
 
 ### Monitoreo y Detección de Drift
 
@@ -422,15 +431,11 @@ Dashboard continuo monitoreando:
 
 **Herramientas:** Evidently AI para detección de drift, Grafana para dashboards, alertas automáticas en Slack cuando MAPE supera 10% o p-value de drift < 0.05.
 
----
-
 ### Versionado y Actualización
 
 Cada modelo desplegado usa versionado semántico (`v2.3.1`) con metadata completa (fecha, samples, features, performance, baseline de drift) almacenada en MLflow Registry.
 
 **Estrategia de despliegue gradual:** Al introducir una nueva versión, ambas persisten hasta validar viabilidad. Primero en shadow mode (modelo nuevo corre en paralelo sin afectar decisiones), luego canary release (10% del tráfico usa el nuevo), y finalmente rollout completo si las métricas son estables. Si el MAPE en canary aumenta >1 punto, rollback automático a la versión anterior.
-
----
 
 ### Infraestructura
 
@@ -461,8 +466,6 @@ En un escenario empresarial típico, los datos presentan:
 - Inconsistencias temporales
 
 La fase de limpieza y validación, que aquí fue mínima, suele representar el 60-80% del esfuerzo en proyectos reales. Este caso de uso ofrece una visión optimista del proceso.
-
----
 
 ### Mejoras Inmediatas Antes de Producción
 
@@ -510,6 +513,8 @@ source ./.venv/bin/activate
 # Instalar librerias necesarias
 pip3 install -r requirements.txt
 ```
+
+Renombrar fichero `.env.example` a `.env`
 
 El proyecto fue diseñado con el entorno de Vsiual Studio Code con el complemento Jupiter Notebook, lo que mejora el flujo de ejecucion sin tener que estar copiando los datos y la estructura de directorios.
 
