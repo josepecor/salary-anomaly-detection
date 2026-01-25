@@ -80,9 +80,13 @@ El análisis univariado temporal confirmó la ausencia de inconsistencias cronol
 
 #### Análisis de Outliers Salariales
 
-El análisis univariado inicial sugería salarios fuera de rango para ciertos roles. Sin embargo, el **análisis multivariado** (considerando rol, nivel y experiencia) demostró que estos valores estaban justificados y no representaban inconsistencias salariales.
+El análisis inicial sugería salarios fuera de rango para ciertos roles. Sin embargo, el **análisis multivariado** (considerando rol, nivel y experiencia) demostró que estos valores estaban justificados y no representaban inconsistencias salariales.
 
 ![Análisis multivariado salario-rol-nivel](Images/analisis_salario_rol_nivel.png)
+
+#### Análisis de Variables Categóricas
+
+También se realizó un análisis para corroborar que las variables categóricas no tuviesen valores no esperados, este análisis se realizó en el mismo paso que se analizó las correlaciones de las variables, debido que por cada valor se obtuvo el porcentaje de asignación y así también poder analizar el impacto dentro del dataset.
 
 ---
 
@@ -94,7 +98,7 @@ Llegó el momento de materializar las conclusiones del análisis exploratorio. E
 
 Con las 15 variables problemáticas ya identificadas en la fase exploratoria, su eliminación fue directa y sin complicaciones. El dataset no presentaba valores nulos ni inconsistencias, lo que permitió un proceso de limpieza eficiente: de 35 variables iniciales se redujo a 20, conservando únicamente aquellas con verdadero valor predictivo.
 
-En este caso no hubieron trnasformaciones de los datos del dataset. Las transformaciones técnicas específicas de cada algoritmo —escalado, codificación de variables categóricas— se reservaron para etapas posteriores del pipeline, donde cada modelo dictaría sus propias necesidades de preprocesamiento.
+En este caso no hubieron transformaciones de los datos del dataset. Las transformaciones técnicas específicas de cada algoritmo —escalado, codificación de variables categóricas— se reservaron para etapas posteriores del pipeline, donde cada modelo dictaría sus propias necesidades de preprocesamiento.
 
 ### Preparación para Dos Escenarios
 
@@ -185,6 +189,18 @@ Si R² es 0.94, estamos explicando el 94% de por qué los salarios son diferente
 **MAPE (Error Porcentual Absoluto Medio)** es nuestro traductor. Convierte el error técnico en lenguaje de negocio. Si MAE es 820 y el salario promedio es 10,000, MAPE es aproximadamente 8%. Eso significa: "El modelo se equivoca en promedio un 8% del salario real".
 
 Los directivos no piensan en RMSE de 1072. Piensan en porcentajes de presupuesto, márgenes de error aceptables, costos relativos. MAPE habla ese idioma. Es el puente entre el equipo técnico y las decisiones de negocio.
+
+### Mejor Modelo
+
+Tras evaluar las curvas de aprendizaje y gráficos de valores reales frente a valores predichos.
+
+La Regresión Lineal presentó un claro caso de underfitting, con errores elevados tanto en entrenamiento como en validación, lo que indica una capacidad insuficiente para capturar la complejidad del problema.
+
+XGBoost mostró un alto poder predictivo y una mejora progresiva al aumentar el tamaño del conjunto de entrenamiento. No obstante, en los tamaños de muestra más reducidos se observa una mayor diferencia entre los errores de entrenamiento y validación, lo que indica una mayor sensibilidad al sobreajuste.
+
+Random Forest presentó un comportamiento más estable y robusto, con una separación moderada entre los errores de entrenamiento y validación y una rápida convergencia de la curva de validación. Además, los gráficos de valores reales frente a valores predichos muestran una buena alineación con la diagonal y una dispersión controlada en todo el rango de valores.
+
+En base a estos resultados, Random Forest fue seleccionado como modelo final, al ofrecer el mejor equilibrio entre rendimiento predictivo, estabilidad y capacidad de generalización, siendo especialmente adecuado para un escenario de aplicación real.
 
 ---
 
